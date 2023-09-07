@@ -62,9 +62,7 @@ REPORT_DIR := $(COV_DIR)/report
 
 .PHONY: all clean re format style test test-leaks test-rebuild test-re cov clean-cov
 
-all:
-	make style
-	make test-leaks
+all: style test-leaks
 
 clean: clean-cov
 	rm -rf $(shell $(FIND_GARBAGE))
