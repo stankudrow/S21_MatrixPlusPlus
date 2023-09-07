@@ -3,13 +3,16 @@ ifeq ($(OS), Windows_NT)
 	$(error "The Windows platform is not supported.")
 else
 	UNAME := $(shell uname -s)
+	RELICS_PATTERN := '.*\.(d|o|out|dSYM)'
 	ifeq ($(UNAME), Linux)
 		LEAKS := valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes
 		OPEN := xdg-open
+		FIND_GARBAGE := find . -regextype posix-egrep -regex $(RELICS_PATTERN)
 	endif
 	ifeq ($(UNAME), Darwin)
 		LEAKS := leaks --atExit --
 		OPEN := open
+		FIND_GARBAGE := find -E . -regex $(RELICS_PATTERN)
 	endif
 endif
 
@@ -63,9 +66,8 @@ all:
 	make style
 	make test-leaks
 
-clean:
-	rm -rf $(shell find -E . -regex '.*\.(d|o|out|dSYM)')
-	@make clean-cov
+clean: clean-cov
+	rm -rf $(shell $(FIND_GARBAGE))
 
 re: clean all
 
