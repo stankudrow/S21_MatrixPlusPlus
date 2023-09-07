@@ -44,17 +44,17 @@ class S21Matrix {
 
   S21Matrix& operator=(const S21Matrix& other) {
     if (this != &other) {
-        S21Matrix copy{other};
-        *this = std::move(copy);
+      S21Matrix copy{other};
+      *this = std::move(copy);
     }
     return *this;
   }
 
   S21Matrix& operator=(S21Matrix&& other) noexcept {
     if (this != &other) {
-        std::swap(_rows, other._rows);
-        std::swap(_cols, other._cols);
-        std::swap(_matrix, other._matrix);
+      std::swap(_rows, other._rows);
+      std::swap(_cols, other._cols);
+      std::swap(_matrix, other._matrix);
     }
     return *this;
   }

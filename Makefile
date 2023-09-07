@@ -18,6 +18,7 @@ NAME := s21_matrix_oop
 ### Files and directories
 
 SRC_DIR := ./src
+HEADERS := $(shell mkdir -p $(SRC_DIR); find $(SRC_DIR) -type f -name "*.h")
 HEADER_DIRS = $(shell find $(SRC_DIR) -type f -name "*.h" -exec dirname {} \; | uniq)
 
 TEST_DIR := ./tests
@@ -28,7 +29,7 @@ TEST_OBJECTS := $(TEST_SOURCES:.cc=.o)
 TEST_RUNNER := $(TEST_DIR)/test_runner.out
 
 ALL_HEADERS := $(HEADERS) $(TEST_HEADERS)
-ALL_SOURCES := $(SOURCES) $(TEST_SOURCES)
+ALL_SOURCES := $(TEST_SOURCES)
 ALL_FILES := $(ALL_HEADERS) $(ALL_SOURCES)
 
 ### Commands and options
@@ -61,7 +62,6 @@ REPORT_DIR := $(COV_DIR)/report
 all:
 	make style
 	make test-leaks
-	make cov
 
 clean:
 	rm -rf $(shell find -E . -regex '.*\.(d|o|out|dSYM)')
