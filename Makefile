@@ -58,9 +58,10 @@ COV_NAME := $(NAME).cov
 COV_OUT := $(NAME).report
 COV_INFO := $(NAME).info
 REPORT_DIR := $(COV_DIR)/report
-
 # branch coverage keyword
 LCOV_BC := --rc lcov_branch_coverage=1
+# coverage percentage value: if less, then fail
+COV_PERCENTAGE := 70
 
 ### Targets
 
@@ -110,12 +111,18 @@ cov: cov-clean
 	lcov -r $(COV_INFO) "/usr*" -o $(COV_INFO) $(LCOV_BC)
 	@mv *.gcda *.gcno *.info *.report $(COV_DIR)
 
-cov-stdout:
-	lcov --list $(COV_DIR)/$(COV_INFO) $(LCOV_BC)
-
 cov-html:
 	genhtml -o $(REPORT_DIR) $(COV_DIR)/$(COV_INFO)
 	$(OPEN) $(REPORT_DIR)/index.html
+
+cov-stdout:
+	lcov --list $(COV_DIR)/$(COV_INFO) $(LCOV_BC)
+
+cov-test:
+	@echo "Coverage Minimum Level = " $(COV_PERCENTAGE)
+	@lcov --summary $(COV_DIR)/$(COV_INFO) $(LCOV_BC) \
+	| awk '/.: /{ print $$0 }' \
+	| awk '{ sum += $$2 } END { mean = (sum / NR); printf "Coverage = %s\n", mean; exit (sum / NR) < $(COV_PERCENTAGE)}'
 
 cov-clean:
 	rm -rf $(COV_DIR)
