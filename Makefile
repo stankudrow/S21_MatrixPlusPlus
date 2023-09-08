@@ -53,14 +53,18 @@ INCS := $(TEST_HEADERS_INCS) $(SRC_HEADERS_INCS)
 
 ### Coverage
 
-COV_DIR := ./gcov_report
+COV_DIR := ./coverage
+COV_NAME := $(NAME).cov
 COV_OUT := $(NAME).report
 COV_INFO := $(NAME).info
 REPORT_DIR := $(COV_DIR)/report
 
+# branch coverage keyword
+LCOV_BC := --rc lcov_branch_coverage=1
+
 ### Targets
 
-.PHONY: all clean re format style test test-leaks test-rebuild test-re cov clean-cov
+.PHONY: all clean re format style test test-leaks test-rebuild test-re cov cov-stdout cov-html cov-clean
 
 all: style test-leaks
 
@@ -92,15 +96,26 @@ test-re: test-rebuild
 	@make test
 
 # https://ps-group.github.io/cxx/coverage_gcc
-cov: clean-cov
+# -b/--base-directory - for relative paths
+# -c/--capture - capture coverage data (by default just stdout)
+# -d/--directory - use `.da` files in directory instead of kernel
+# -l/--list - list the contents of the tracefile
+# -o/--output-file - write data to tracefile instead of stdout
+# -r/--remove tracefile pattern - remove data from tracefile
+cov: cov-clean
 	@mkdir -p $(COV_DIR)
 	$(CXX) $(CXXFLAGS) --coverage $(INCS) $(ALL_SOURCES) -o $(COV_OUT) $(GTEST_FLAGS)
 	./$(COV_OUT)
-	lcov -b . -c -d . -t $(COV_NAME) -c -o $(COV_INFO)
-	lcov -r $(COV_INFO) "/usr*" -o $(COV_INFO)
-	genhtml -o $(REPORT_DIR) $(COV_INFO)
+	lcov -b . -c -d . -t $(COV_NAME) -o $(COV_INFO) $(LCOV_BC)
+	lcov -r $(COV_INFO) "/usr*" -o $(COV_INFO) $(LCOV_BC)
 	@mv *.gcda *.gcno *.info *.report $(COV_DIR)
+
+cov-stdout:
+	lcov --list $(COV_DIR)/$(COV_INFO) $(LCOV_BC)
+
+cov-html:
+	genhtml -o $(REPORT_DIR) $(COV_DIR)/$(COV_INFO)
 	$(OPEN) $(REPORT_DIR)/index.html
 
-clean-cov:
+cov-clean:
 	rm -rf $(COV_DIR)
