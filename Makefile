@@ -66,7 +66,7 @@ LCOV_BC := --rc lcov_branch_coverage=1
 
 .PHONY: all clean re format style test test-leaks test-rebuild test-re cov cov-stdout cov-html cov-clean
 
-all: style test-leaks
+all: style test-leaks cov
 
 clean: clean-cov
 	rm -rf $(shell $(FIND_GARBAGE))
