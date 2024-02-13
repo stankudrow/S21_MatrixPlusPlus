@@ -69,7 +69,7 @@ COV_PERCENTAGE := 70
 
 all: style test-leaks cov
 
-clean: clean-cov
+clean: cov-clean
 	rm -rf $(shell $(FIND_GARBAGE))
 
 re: clean all

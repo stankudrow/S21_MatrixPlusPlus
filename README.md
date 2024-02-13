@@ -1,6 +1,6 @@
 # s21_matrix++
 
-The enhancement of the School 21 MatrixPlus project.
+The enhancement of the School21 Matrix+ project.
 
 ## General information
 
@@ -11,6 +11,11 @@ This implementation extends the original task:
 * it is template-based;
 * it accepts only arithmetic types;
 
-## References
+## Tech details
 
-* [cpp1_s21_matrix_plus](https://github.com/stankudrow/CPP1_S21_MatrixPlus) - the original project.
+Tested on the Ubuntu 22.04 Jelly Fish LTS.
+
+* `sudo apt install build-essential` - C/C++ and other compilers
+* `sudo apt install make`
+* `sudo apt install clang-format`
+* `sudo apt install lcov` - coverage
